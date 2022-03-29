@@ -1,0 +1,469 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "E251DDwDH72f"
+      },
+      "source": [
+        "# Import Basic Libraries"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "s6WZAaQ3H7JG"
+      },
+      "outputs": [],
+      "source": [
+        "import pandas as pd\n",
+        "import json\n",
+        "import requests\n",
+        "from nltk.stem import PorterStemmer"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "5Zy1WXQI3m4c"
+      },
+      "source": [
+        "# Musixmatch Section"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "VEPogZNy3lWN"
+      },
+      "outputs": [],
+      "source": [
+        "# uncomment the pip below if pymusixmatch is not installed\n",
+        "# pip install pymusixmatch"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "FJxA66fp3tP9"
+      },
+      "outputs": [],
+      "source": [
+        "from musixmatch import Musixmatch"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "Ewmm8DWsI3JU"
+      },
+      "outputs": [],
+      "source": [
+        "mm_auth = '609ff78f4f39b1007faa99f51e07a34e'"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "5gE9_PQj3tCl"
+      },
+      "outputs": [],
+      "source": [
+        "mm = Musixmatch(mm_auth)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "wW2loob3Lerq"
+      },
+      "outputs": [],
+      "source": [
+        "mm_root = 'http://api.musixmatch.com/ws/1.1/'"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "9PK4glCHLqaM",
+        "outputId": "7383a9f6-9f2d-4009-e030-4886bba0a0b6"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "'apikey=609ff78f4f39b1007faa99f51e07a34e'"
+            ]
+          },
+          "execution_count": 418,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "apikey = 'apikey='+mm_auth\n",
+        "apikey"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "y50VZHRYHhu2",
+        "outputId": "d601e356-6653-4b47-abe4-b8e404f8b6a9"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "Please enter keymood to generate a playlist from: drugs\n"
+          ]
+        }
+      ],
+      "source": [
+        "preword = input('Please enter keymood to generate a playlist from: ')\n",
+        "\n",
+        "porter = PorterStemmer()\n",
+        "keyword = porter.stem(preword)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "nah6o6zXNb0h"
+      },
+      "outputs": [],
+      "source": [
+        "info = '&page_size=25&page=1&s_track_rating=desc&'\n",
+        "track_search = 'track.search?q_lyrics='"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "xSGzIDaXO8B6",
+        "outputId": "cbeb79bd-23a5-4c34-a642-6ecf1739eafe"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "'http://api.musixmatch.com/ws/1.1/track.search?q_lyrics=drug&page_size=25&page=1&s_track_rating=desc&apikey=609ff78f4f39b1007faa99f51e07a34e'"
+            ]
+          },
+          "execution_count": 421,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "track_search_full = mm_root+track_search+keyword+info+apikey\n",
+        "track_search_full"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "HhTmgBgXO2Sx"
+      },
+      "outputs": [],
+      "source": [
+        "r_tracks = requests.get(track_search_full)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "LoYx0V2DPJtb"
+      },
+      "outputs": [],
+      "source": [
+        "result = r_tracks.json()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "3JnsX3XwSiP8"
+      },
+      "outputs": [],
+      "source": [
+        "data = {'track name':[],'artist name':[]}\n",
+        "\n",
+        "for i in result['message']['body']['track_list']:\n",
+        "    data['track name'].append(i['track']['track_name'])\n",
+        "    data['artist name'].append(i['track']['artist_name'])\n",
+        "    \n",
+        "df = pd.DataFrame(data)\n",
+        "\n",
+        "df['together'] = df['track name'].str.cat(df['artist name'],' ')"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "NY4Hn2xXA9p3"
+      },
+      "source": [
+        "# Spotify Section"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "1AhGn_DSAzs2",
+        "scrolled": true
+      },
+      "outputs": [],
+      "source": [
+        "# uncomment the pip below if spotipy is not installed\n",
+        "# pip install spotipy"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "gpk_GhCpA2GJ"
+      },
+      "outputs": [],
+      "source": [
+        "import spotipy\n",
+        "import spotipy.util as util\n",
+        "from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth\n",
+        "\n",
+        "# My client ID & client secret\n",
+        "\n",
+        "cid = '98c473969fa3420b870de2b597fcd03c'\n",
+        "secret = 'dd2b079eab85492ca176fa1ced040769'\n",
+        "\n",
+        "ccm = SpotifyClientCredentials(client_id=cid, client_secret=secret)\n",
+        "sp = spotipy.Spotify(client_credentials_manager=ccm)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "Ajw5kQeRzm21"
+      },
+      "outputs": [],
+      "source": [
+        "# didn't need this but is token creation and authentication for querying Spotify API directly\n",
+        "\n",
+        "AUTH_URL = \"https://accounts.spotify.com/api/token\"\n",
+        "auth_response = requests.post(AUTH_URL, {\n",
+        "    'grant_type': 'client_credentials',\n",
+        "    'client_id': cid,\n",
+        "    'client_secret': secret,\n",
+        "})\n",
+        "\n",
+        "#Convert response to JSON\n",
+        "auth_response_data = auth_response.json()\n",
+        "\n",
+        "#Save the access token\n",
+        "access_token = auth_response_data['access_token']\n",
+        "\n",
+        "#Need to pass access token into header to send properly formed GET request to API server\n",
+        "headers = {\n",
+        "    'Authorization': 'Bearer {token}'.format(token=access_token)\n",
+        "}"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 678
+        },
+        "id": "x0AMJC1t20gb",
+        "outputId": "cba4b5b8-28b1-45c4-f554-da44cb2e4b00"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "Please enter your Spotify username: timetogetnasty\n"
+          ]
+        }
+      ],
+      "source": [
+        "username = input('Please enter your Spotify username: ')\n",
+        "scope = 'playlist-modify-public'\n",
+        "redirect = 'http://localhost/'\n",
+        "\n",
+        "token = util.prompt_for_user_token(username, scope, client_id=cid, client_secret=secret, redirect_uri=redirect)\n",
+        "\n",
+        "spo = spotipy.Spotify(auth=token)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "8RSkpkGeJB5O"
+      },
+      "outputs": [],
+      "source": [
+        "list_name = preword + ' music'\n",
+        "descrip = 'This playlist includes songs whose lyrics include the word \"'+ preword + '\"'\n",
+        "\n",
+        "results = spo.user_playlist_create(user=username, name=list_name, public=True, description=descrip)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "mmxjUD_BLhQK"
+      },
+      "outputs": [],
+      "source": [
+        "uris = []\n",
+        "\n",
+        "for row in df['together']:\n",
+        "    tracks = sp.search(q=row, limit=1, type='track')\n",
+        "    for t in tracks['tracks']['items']:\n",
+        "        uris.append(t['id'])"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "uPCOEIlQzm23"
+      },
+      "outputs": [],
+      "source": [
+        "user_lists = spo.user_playlists(username, limit=1)\n",
+        "generated_id = user_lists['items'][0]['id']"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "2tNvVPduzm23",
+        "outputId": "9db5ac59-dddf-4620-cb2a-16ef3597202a"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "{'snapshot_id': 'MywxZGE3NDIzZmRkNzAxMzAxM2Y0NWNiZjlkODlhZTZiNDY0NGYyZWRl'}"
+            ]
+          },
+          "execution_count": 433,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "spo.user_playlist_add_tracks(username,generated_id,uris)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "iNeDwXDjzm24",
+        "outputId": "84594703-a900-41df-d32b-3b9240d8c4d9"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "{'spotify': 'https://open.spotify.com/track/32KDjJBCBNpP4U8hFP23db'}"
+            ]
+          },
+          "execution_count": 435,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "rev = sp.search(q='i think tech n9ne',limit=1,type='track')\n",
+        "rev['tracks']['items'][0]['external_urls']"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "MZVfWbuOzm24"
+      },
+      "outputs": [],
+      "source": [
+        "# didn't use this but it's if we were querying the Spotify API directly\n",
+        "\n",
+        "sp_root = 'https://api.spotify.com/v1/search?q='\n",
+        "sp_test = 'i%20think%20tech%20n9ne'\n",
+        "sp_info = '&type=track&limit=1'\n",
+        "find_full = sp_root+sp_test+sp_info\n",
+        "\n",
+        "# test_sp = requests.get(find_full,headers=headers)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "QRhzwGS9zm24"
+      },
+      "outputs": [],
+      "source": [
+        ""
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "collapsed_sections": [
+        "PhZ7vlUC_B-9",
+        "iRk3hFXrEkjc"
+      ],
+      "name": "Keymood Generator",
+      "provenance": []
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.8.8"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
