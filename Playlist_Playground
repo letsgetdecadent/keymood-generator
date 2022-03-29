@@ -1,0 +1,2946 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Playlist Playground",
+      "provenance": [],
+      "collapsed_sections": [
+        "PhZ7vlUC_B-9",
+        "iRk3hFXrEkjc"
+      ]
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Import Basic Libraries"
+      ],
+      "metadata": {
+        "id": "E251DDwDH72f"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import json\n",
+        "import requests"
+      ],
+      "metadata": {
+        "id": "s6WZAaQ3H7JG"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Genius Section\n",
+        "\n",
+        "Let's see what LyricsGenius can do."
+      ],
+      "metadata": {
+        "id": "PhZ7vlUC_B-9"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Authentication Block"
+      ],
+      "metadata": {
+        "id": "SlUdWyA8Egfj"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install lyricsgenius"
+      ],
+      "metadata": {
+        "id": "63N-ridl_K5K",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "7592345a-ce77-4b4e-b621-158affe74eb6"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting lyricsgenius\n",
+            "  Downloading lyricsgenius-3.0.1-py3-none-any.whl (59 kB)\n",
+            "\u001b[?25l\r\u001b[K     |█████▌                          | 10 kB 22.3 MB/s eta 0:00:01\r\u001b[K     |███████████                     | 20 kB 14.6 MB/s eta 0:00:01\r\u001b[K     |████████████████▌               | 30 kB 10.6 MB/s eta 0:00:01\r\u001b[K     |██████████████████████          | 40 kB 9.3 MB/s eta 0:00:01\r\u001b[K     |███████████████████████████▋    | 51 kB 5.1 MB/s eta 0:00:01\r\u001b[K     |████████████████████████████████| 59 kB 3.0 MB/s \n",
+            "\u001b[?25hRequirement already satisfied: requests>=2.20.0 in /usr/local/lib/python3.7/dist-packages (from lyricsgenius) (2.23.0)\n",
+            "Requirement already satisfied: beautifulsoup4>=4.6.0 in /usr/local/lib/python3.7/dist-packages (from lyricsgenius) (4.6.3)\n",
+            "Requirement already satisfied: chardet<4,>=3.0.2 in /usr/local/lib/python3.7/dist-packages (from requests>=2.20.0->lyricsgenius) (3.0.4)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.7/dist-packages (from requests>=2.20.0->lyricsgenius) (2021.10.8)\n",
+            "Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /usr/local/lib/python3.7/dist-packages (from requests>=2.20.0->lyricsgenius) (1.24.3)\n",
+            "Requirement already satisfied: idna<3,>=2.5 in /usr/local/lib/python3.7/dist-packages (from requests>=2.20.0->lyricsgenius) (2.10)\n",
+            "Installing collected packages: lyricsgenius\n",
+            "Successfully installed lyricsgenius-3.0.1\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from lyricsgenius import Genius\n",
+        "\n",
+        "# here we enter our client access token for the Genius API\n",
+        "genius = Genius('cDM3NY8eXTSWFCJBJpoIY7WEuyjOgDdnj-8K5WrbG-C-OlBi_5nM_wgk1Nc3QfYn')"
+      ],
+      "metadata": {
+        "id": "V70-y2VISHtC"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Genre Block"
+      ],
+      "metadata": {
+        "id": "iRk3hFXrEkjc"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# pulling back lyrics of 20 songs under a certain genre\n",
+        "\n",
+        "res = genius.tag('pop', page=1)"
+      ],
+      "metadata": {
+        "id": "_5GkztqfCJi3"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "len(res['hits'])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "toi-IdbECrHm",
+        "outputId": "d0311af1-d6d5-4a61-b38d-ae0eeddad908"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "20"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 9
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "res['hits']"
+      ],
+      "metadata": {
+        "id": "j08Pym3F8pmX"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "despacito = res['hits'][0]\n",
+        "despacito"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_FnSZGtbDvhu",
+        "outputId": "63fbafc5-4563-4b05-8186-0b5d1b3a143d"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'artists': ['Luis Fonsi', 'Daddy Yankee'],\n",
+              " 'featured_artists': ['Justin Bieber'],\n",
+              " 'title': 'Despacito (Remix)',\n",
+              " 'title_with_artists': 'Despacito (Remix) by Luis Fonsi & Daddy Yankee (Ft. Justin Bieber)',\n",
+              " 'url': 'https://genius.com/Luis-fonsi-and-daddy-yankee-despacito-remix-lyrics'}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 13
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "genius.lyrics(song_url=despacito['url'])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 122
+        },
+        "id": "FgNe5JrwDyhJ",
+        "outputId": "f52df503-8649-44d7-ea98-be8a5f095382"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'Despacito (Remix) Lyrics[Letra de \"Despacito (Remix)\" ft. Justin Bieber]\\n\\n[Intro: Justin Bieber]\\nComin\\' over in my direction\\nSo thankful for that, it\\'s such a blessin\\', yeah\\nTurn every situation into heaven, yeah\\nOh-oh, you are\\nMy sunrise on the darkest day\\nGot me feelin\\' some kind of way\\nMake me wanna savor every moment slowly, slowly\\nYou fit me tailor-made, love how you put it on\\nGot the only key, know how to turn it on\\nThe way you nibble on my ear, the only words I wanna hear\\nBaby, take it slow so we can last long\\n\\n[Verso 1: Luis Fonsi & Daddy Yankee]\\n¡Oh! Tú, tú eres el imán y yo soy el metal\\nMe voy acercando y voy armando el plan\\nSólo con pensarlo se acelera el pulso (Oh, yeah)\\nYa, ya me está gustando más de lo normal\\nTodos mis sentidos van pidiendo más\\nEsto hay que tomarlo sin ningún apuro\\n\\n[Coro: Justin Bieber & Luis Fonsi, Daddy Yankee]\\nDespacito\\nQuiero respirar tu cuello despacito\\nDeja que te diga cosas al oído\\nPara que te acuerdes si no estás conmigo\\nDespacito\\nQuiero desnudarte a besos despacito\\nFirmo en las paredes de tu laberinto\\nY hacer de tu cuerpo todo un manuscrito\\n(Sube, sube, sube\\nSube, sube)\\n[Post-Coro: Luis Fonsi & Daddy Yankee]\\nQuiero ver bailar tu pelo, quiero ser tu ritmo (Woah, woah)\\nQue le enseñes a mi boca (Woah, woah)\\nTus lugares favoritos (Favorito, favorito, baby)\\nDéjame sobrepasar tus zonas de peligro (Woah, woah)\\nHasta provocar tus gritos (Woah, woah)\\nY que olvides tu apellido\\n\\n[Verso 2: Daddy Yankee]\\nSi te pido un beso, ven, dámelo, yo sé que estás pensándolo\\nLlevo tiempo intentándolo, mami, esto es dando y dándolo\\nSabes que tu corazón conmigo te hace bom, bom\\nSabes que esa beba está buscando de mi bom, bom\\nVen, prueba de mi boca para ver cómo te sabe\\nQuiero, quiero, quiero ver cuánto amor a ti te cabe\\nYo no tengo prisa, yo me quiero dar el viaje\\nEmpecemos lento, después salvaje\\n\\n[Pre-Coro: Daddy Yankee & Justin Bieber, Daddy Yankee]\\nPasito a pasito, suave suavecito\\nNos vamos pegando, poquito a poquito\\nCuando tú me besas con esa destreza\\nVeo que eres malicia con delicadeza\\nPasito a pasito, suave suavecito\\nNos vamos pegando, poquito a poquito\\nY es que esa belleza es un rompecabezas\\nPero pa\\' montarlo aquí tengo la pieza\\n¡Oye!\\n[Coro: Justin Bieber & Luis Fonsi, Daddy Yankee]\\nDespacito\\nQuiero respirar tu cuello despacito\\nDeja que te diga cosas al oído\\nPara que te acuerdes si no estás conmigo\\nDespacito\\nQuiero desnudarte a besos despacito\\nFirmo en las paredes de tu laberinto\\nY hacer de tu cuerpo todo un manuscrito\\n(Sube, sube, sube\\nSube, sube)\\n\\n[Post-Coro: Luis Fonsi & Daddy Yankee]\\nQuiero ver bailar tu pelo, quiero ser tu ritmo (Woah, woah)\\nQue le enseñes a mi boca (Woah, woah)\\nTus lugares favoritos (Favorito, favorito, baby)\\nDéjame sobrepasar tus zonas de peligro (Woah, woah)\\nHasta provocar tus gritos (Woah, woah)\\nY que olvides tu apellido\\n\\n[Puente: Luis Fonsi]\\nDespacito\\nThis is how we do it down in Puerto Rico\\nI just wanna hear you screaming, \"¡Ay, Bendito!\"\\nI can move forever cuando esté contigo\\n¡Báilalo!\\n[Outro: Daddy Yankee, Luis Fonsi & Justin Bieber]\\nPasito a pasito, suave suavecito\\nNos vamos pegando, poquito a poquito\\nQue le enseñes a mi boca\\nTus lugares favoritos\\n(Favorito, favorito, baby)\\nPasito a pasito, suave suavecito\\nNos vamos pegando, poquito a poquito\\nHasta provocar tus gritos (Fonsi)\\nY que olvides tu apellido (D.Y.)\\nDespacito406Embed'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 16
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# for some reason automating it all times out repeatedly\n",
+        "# I think the reason is that the lyricsgenius class here is just scraping the url of the song to return the lyrics and we all have realized scraping is a finnicky thing\n",
+        "\n",
+        "lyrics = []\n",
+        "\n",
+        "for hit in res['hits']:\n",
+        "    song_lyrics = genius.lyrics(song_url=hit['url'])\n",
+        "    lyrics.append(song_lyrics)"
+      ],
+      "metadata": {
+        "id": "mH7QAzeKCkQb"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "urls = []\n",
+        "\n",
+        "for hit in res['hits']:\n",
+        "    urls.append(hit['url'])"
+      ],
+      "metadata": {
+        "id": "wirTvtBZ7qhB"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "url1 = urls[0:9]\n",
+        "url2 = urls[10:19]"
+      ],
+      "metadata": {
+        "id": "pEQcmJ4sD-xr"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "urls[0]"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "W-BtQEqDEl3T",
+        "outputId": "e582e518-3275-465f-f9e1-740bdb0712ed"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'https://genius.com/Luis-fonsi-and-daddy-yankee-despacito-remix-lyrics'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 20
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "genius.song()"
+      ],
+      "metadata": {
+        "id": "cP2gnme1OimE"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "lyrics = []\n",
+        "\n",
+        "for u in urls[0:1]:\n",
+        "  lyrics.append(genius.lyrics(u))"
+      ],
+      "metadata": {
+        "id": "c8IDTbckAjMl"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "rapgod = 'https://genius.com/Eminem-rap-god-lyrics'\n",
+        "\n",
+        "res_rg = requests.get(rapgod)\n",
+        "rg = res_rg.text"
+      ],
+      "metadata": {
+        "id": "XA265bHia5ux"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "genius.web_page(rapgod)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "H3vY8yGbbTKB",
+        "outputId": "afeeadbc-12a9-4239-8694-69fb5867644f"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'web_page': {'annotation_count': 0,\n",
+              "  'api_path': '/web_pages/5455',\n",
+              "  'domain': 'genius.com',\n",
+              "  'id': 5455,\n",
+              "  'normalized_url': '//genius.com/Eminem-rap-god-lyrics',\n",
+              "  'share_url': 'http://genius.it/genius.com/Eminem-rap-god-lyrics',\n",
+              "  'title': 'Eminem – Rap God Lyrics | Genius',\n",
+              "  'url': 'https://genius.com/genius.com/Eminem-rap-god-lyrics'}}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 46
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Problems**\n",
+        "\n",
+        "* We can get urls from the genre tag search but we need song_ids to get the Spotify URL\n",
+        "\n",
+        "* Basically the .tag and .lyrics methods do not actually use the Genius API but instead parse the HTML to return their results\n",
+        "\n",
+        "  * We could parse the HTML ourselves to find the song_id or probably just find a Spotify or Apple music url straight from the page\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "5qt2QNSwUdCE"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Keyword Search Block"
+      ],
+      "metadata": {
+        "id": "EsSjwkxsEVfb"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# so far I've tried two words, \"love\" and \"erudite\"; the latter returned mostly audiobook chapters which is hillarious and frustrating\n",
+        "words = ['erudite']\n",
+        "keyword = words\n",
+        "\n",
+        "key_results = genius.search_lyrics(keyword, per_page=20,page=3)"
+      ],
+      "metadata": {
+        "id": "lG7JB2awFsa0"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "key_results['sections'][0]['hits']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KvcQGVXOSKqm",
+        "outputId": "756765e4-4dba-4df3-a4ed-72f2adedaa1e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "list"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 32
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "hits3 = key_results['sections'][0]['hits']"
+      ],
+      "metadata": {
+        "id": "BEmOQCS4XgS7"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(len(hits))\n",
+        "print(len(hits2))\n",
+        "print(len(hits3))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "k1qtNiRjKCYZ",
+        "outputId": "8ce2d6e7-7c1e-49e6-e529-3706a3d4ce5f"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "20\n",
+            "19\n",
+            "20\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "song_ids = []\n",
+        "\n",
+        "for hit in hits:\n",
+        "  song_ids.append(hit['result']['id'])\n",
+        "  print(hit['result']['full_title'])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "0PROjtetdf-_",
+        "outputId": "be95ff82-5d9a-4f22-b037-2cfdb7eaa2cc"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Divergent (Chapter 1) by Veronica Roth\n",
+            "The Scarlet Letter (Chap. 12) by Nathaniel Hawthorne\n",
+            "Divergent (Chapter 2) by Veronica Roth\n",
+            "Notes Toward a Supreme Fiction by Wallace Stevens\n",
+            "Divergent (Chapter 5) by Veronica Roth\n",
+            "Ulysses (Chap. 12 - Cyclops) by James Joyce\n",
+            "Divergent (Chapter 6) by Veronica Roth\n",
+            "Divergent (Chapter 3) by Veronica Roth\n",
+            "Stun Gun by CZARFACE & MF DOOM\n",
+            "Divergent (Chapter 4) by Veronica Roth\n",
+            "Ulysses (Chap. 14 - Oxen of the Sun) by James Joyce\n",
+            "Young Man's Game by Fleet Foxes\n",
+            "Scattered Tulips by FLAME\n",
+            "The  Freaking 125 List Of Reasons I Love Lionel Messi by Jess MaQswell (Ft. Ill-FuQ-You-Up, Katniss, LilyLunaPotter, LilyLunaPotter331, LilyLunaPQtter, Q10 & Sports Genius Football)\n",
+            "Old Mythologies by The Barr Brothers\n",
+            "Élément Terre by Keny Arkana\n",
+            "The Way Through by Deca\n",
+            "Ladies of the World by Flight of the Conchords\n",
+            "Chapter 2 by Marcel Proust\n",
+            "A visit from Albertine (Chapter 2) by Marcel Proust\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for hit in hits3:\n",
+        "  song_ids.append(hit['result']['id'])\n",
+        "  print(hit['result']['full_title'])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "0_f6K9D1My1F",
+        "outputId": "dbb74b8b-e06a-4434-ee96-38b493fa9d03"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "The Task by William Cowper\n",
+            "Veillée Pinouilles -Chapitre 7 by James Joyce (Ft. Hervé J. MICHEL)\n",
+            "The Magic Skin (3. The Agony) by Honoré de Balzac (Ft. Ellen Marriage)\n",
+            "The Isiac Tablet of Cardinal Bembo by W. Wynn Westcott\n",
+            "Actes and Monuments (Foxe's Book of Martyrs) Chapter 16 by John Foxe\n",
+            "Lore Of The Unicorn - Chapter 5 by Odell Shepard\n",
+            "Flight of the Eagle by Om (Band)\n",
+            "Process Meticulous by K-Rino\n",
+            "Donkeyskin by Charles Perrault\n",
+            "Apéritif by Hannibal\n",
+            "Silas Marner (Chap. 2) by George Eliot\n",
+            "Rays of the Sun / To the Shrinebuilder by Om (Band)\n",
+            "Insurgent by Veronica Roth\n",
+            "Just the Type by Gripp\n",
+            "Black Patch War by Common Market\n",
+            "The Generalife by Washington Irving\n",
+            "Eureka: A Prose Poem by Edgar Allan Poe\n",
+            "Unfettering The Hoary Sentinels Of Karnak by Bal-Sagoth\n",
+            "Preface (Leaves of Grass) by Walt Whitman\n",
+            "S.A.L.A.A.M. by MC Paul Barman\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "split1 = song_ids[0:19]\n",
+        "split2 = song_ids[20:39]\n",
+        "split3 = song_ids[40:]"
+      ],
+      "metadata": {
+        "id": "dZ5fKjUvf9hc"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "genius.song(song_ids[11])['song']['media']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Z6fAH31knEC6",
+        "outputId": "7a588389-9da3-49fa-baa2-57598a298f82"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[{'provider': 'youtube',\n",
+              "  'start': 0,\n",
+              "  'type': 'video',\n",
+              "  'url': 'http://www.youtube.com/watch?v=OHsGsMD9wW0'}]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 67
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# FUCK! apple music has audiobooks so not going that route\n",
+        "# getting a lot of timeouts when trying to iterate through 60 songs, likely because of the massive amount of data that the .song method pulls back\n",
+        "# i had to split them up, thus why the media variable is commented out below\n",
+        "\n",
+        "# media = []\n",
+        "\n",
+        "for i in split3:\n",
+        "  m = genius.song(i)['song']['media']\n",
+        "  media.append(m)"
+      ],
+      "metadata": {
+        "id": "ewfxBNSJNIGf"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pd.DataFrame(media)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000
+        },
+        "id": "hfF1ewJUi6v8",
+        "outputId": "f43f4823-f600-49c2-84f0-a125c50f8d3e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                                    0  \\\n",
+              "0                                                None   \n",
+              "1                                                None   \n",
+              "2                                                None   \n",
+              "3                                                None   \n",
+              "4                                                None   \n",
+              "5                                                None   \n",
+              "6                                                None   \n",
+              "7                                                None   \n",
+              "8   {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "9                                                None   \n",
+              "10                                               None   \n",
+              "11  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "12  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "13                                               None   \n",
+              "14                                               None   \n",
+              "15  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "16  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "17  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "18                                               None   \n",
+              "19  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "20                                               None   \n",
+              "21                                               None   \n",
+              "22  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "23                                               None   \n",
+              "24  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "25                                               None   \n",
+              "26                                               None   \n",
+              "27                                               None   \n",
+              "28                                               None   \n",
+              "29                                               None   \n",
+              "30  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "31  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "32                                               None   \n",
+              "33  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "34  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "35  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "36                                               None   \n",
+              "37  {'attribution': 'jonny farias 346660019', 'pro...   \n",
+              "38                                               None   \n",
+              "39                                               None   \n",
+              "40                                               None   \n",
+              "41                                               None   \n",
+              "42                                               None   \n",
+              "43                                               None   \n",
+              "44  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "45                                               None   \n",
+              "46                                               None   \n",
+              "47                                               None   \n",
+              "48                                               None   \n",
+              "49                                               None   \n",
+              "50                                               None   \n",
+              "51  {'provider': 'youtube', 'start': 0, 'type': 'v...   \n",
+              "52                                               None   \n",
+              "53                                               None   \n",
+              "54  {'attribution': 'bal sagoth music', 'provider'...   \n",
+              "55                                               None   \n",
+              "56                                               None   \n",
+              "\n",
+              "                                                    1  \n",
+              "0                                                None  \n",
+              "1                                                None  \n",
+              "2                                                None  \n",
+              "3                                                None  \n",
+              "4                                                None  \n",
+              "5                                                None  \n",
+              "6                                                None  \n",
+              "7                                                None  \n",
+              "8                                                None  \n",
+              "9                                                None  \n",
+              "10                                               None  \n",
+              "11                                               None  \n",
+              "12                                               None  \n",
+              "13                                               None  \n",
+              "14                                               None  \n",
+              "15                                               None  \n",
+              "16                                               None  \n",
+              "17                                               None  \n",
+              "18                                               None  \n",
+              "19                                               None  \n",
+              "20                                               None  \n",
+              "21                                               None  \n",
+              "22                                               None  \n",
+              "23                                               None  \n",
+              "24                                               None  \n",
+              "25                                               None  \n",
+              "26                                               None  \n",
+              "27                                               None  \n",
+              "28                                               None  \n",
+              "29                                               None  \n",
+              "30                                               None  \n",
+              "31                                               None  \n",
+              "32                                               None  \n",
+              "33                                               None  \n",
+              "34                                               None  \n",
+              "35                                               None  \n",
+              "36                                               None  \n",
+              "37                                               None  \n",
+              "38                                               None  \n",
+              "39                                               None  \n",
+              "40                                               None  \n",
+              "41                                               None  \n",
+              "42                                               None  \n",
+              "43                                               None  \n",
+              "44                                               None  \n",
+              "45                                               None  \n",
+              "46                                               None  \n",
+              "47                                               None  \n",
+              "48                                               None  \n",
+              "49                                               None  \n",
+              "50                                               None  \n",
+              "51                                               None  \n",
+              "52                                               None  \n",
+              "53                                               None  \n",
+              "54  {'provider': 'youtube', 'start': 0, 'type': 'v...  \n",
+              "55                                               None  \n",
+              "56                                               None  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-89cc69cc-7afd-4238-add3-ce845ee45957\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>0</th>\n",
+              "      <th>1</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>5</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>6</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>7</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>8</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>9</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>10</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>11</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>12</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>13</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>14</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>15</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>16</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>17</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>18</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>19</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>20</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>21</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>22</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>23</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>24</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>25</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>26</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>27</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>28</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>29</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>30</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>31</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>32</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>33</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>34</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>35</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>36</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>37</th>\n",
+              "      <td>{'attribution': 'jonny farias 346660019', 'pro...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>38</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>39</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>40</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>41</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>42</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>43</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>44</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>45</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>46</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>47</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>48</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>49</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>50</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>51</th>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>52</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>53</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>54</th>\n",
+              "      <td>{'attribution': 'bal sagoth music', 'provider'...</td>\n",
+              "      <td>{'provider': 'youtube', 'start': 0, 'type': 'v...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>55</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>56</th>\n",
+              "      <td>None</td>\n",
+              "      <td>None</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-89cc69cc-7afd-4238-add3-ce845ee45957')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-89cc69cc-7afd-4238-add3-ce845ee45957 button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-89cc69cc-7afd-4238-add3-ce845ee45957');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 96
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "media"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PxsuVj8xniVV",
+        "outputId": "eb154421-8762-43bb-b550-20ce080372b1"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[[],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=4BsHWeo8zWg'}],\n",
+              " [],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=OHsGsMD9wW0'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=gqHQY1I4ygQ'}],\n",
+              " [],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=Tk-BzKszw98'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=0vtFTDmhr0Y'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=ZVSgt3qEKPI'}],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=GCIeeJIPYYw'}],\n",
+              " [],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=Eu8y95uw5BU'}],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=xkgMnMNg9_Y'}],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=NBcfYXe82wE'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=wdSFt8r4yIA'}],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=2ojsSyB9wvw'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=HLvvOjRe6z4'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=tUP2gm-MXxY'}],\n",
+              " [],\n",
+              " [{'attribution': 'jonny farias 346660019',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/jonny-farias-346660019/enemy-prod-by-kenken-killt-it'}],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=T2SVa7bbnVs'}],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=Ug_wGkWNhQw'}],\n",
+              " [],\n",
+              " [],\n",
+              " [{'attribution': 'bal sagoth music',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/bal-sagoth-music/unfettering-the-hoary?in=bal-sagoth-music/sets/the-chthonic-chronicles-1'},\n",
+              "  {'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=JDHdcaq0_xw'}],\n",
+              " [],\n",
+              " []]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 94
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "first = genius.song(song_ids[0])"
+      ],
+      "metadata": {
+        "id": "5TdAdmawg34I"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "first['song']['media']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "L14R-GgtiGud",
+        "outputId": "21e8e8f2-b137-40fa-abd8-1728daa41029"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 57
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "first['song']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hLEgGc8faRjy",
+        "outputId": "49e50dc1-fe22-41ac-faa9-5719d6c44208"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'album': {'api_path': '/albums/86864',\n",
+              "  'artist': {'api_path': '/artists/151698',\n",
+              "   'header_image_url': 'https://images.genius.com/853950724114f28a28e3bf96587f13dd.650x455x1.jpg',\n",
+              "   'id': 151698,\n",
+              "   'image_url': 'https://images.genius.com/ae54efdb8bfdd6746f945859e2899b0a.438x438x1.jpg',\n",
+              "   'is_meme_verified': False,\n",
+              "   'is_verified': False,\n",
+              "   'name': 'Veronica Roth',\n",
+              "   'url': 'https://genius.com/artists/Veronica-roth'},\n",
+              "  'cover_art_url': 'https://images.genius.com/df0675397365c412f071a1a0cf789d79.489x750x1.png',\n",
+              "  'full_title': \"The World of Veronica Roth's Divergent  by Veronica Roth\",\n",
+              "  'id': 86864,\n",
+              "  'name': 'The World of Veronica Roth’s Divergent ',\n",
+              "  'url': 'https://genius.com/albums/Veronica-roth/The-world-of-veronica-roth-s-divergent'},\n",
+              " 'annotation_count': 39,\n",
+              " 'api_path': '/songs/377690',\n",
+              " 'apple_music_id': None,\n",
+              " 'apple_music_player_url': 'https://genius.com/songs/377690/apple_music_player',\n",
+              " 'artist_names': 'Veronica Roth',\n",
+              " 'current_user_metadata': {'excluded_permissions': ['follow',\n",
+              "   'award_transcription_iq',\n",
+              "   'remove_transcription_iq',\n",
+              "   'pyong',\n",
+              "   'edit_lyrics',\n",
+              "   'view_annotation_engagement_data',\n",
+              "   'publish',\n",
+              "   'unpublish',\n",
+              "   'edit_spotify_details',\n",
+              "   'hide',\n",
+              "   'unhide',\n",
+              "   'toggle_featured_video',\n",
+              "   'add_pinned_annotation_to',\n",
+              "   'add_community_annotation_to',\n",
+              "   'destroy',\n",
+              "   'mark_as_not_spam',\n",
+              "   'edit_spotify_annotations_for',\n",
+              "   'verify_lyrics',\n",
+              "   'unverify_lyrics',\n",
+              "   'edit_anything',\n",
+              "   'edit_any_media',\n",
+              "   'edit',\n",
+              "   'rename',\n",
+              "   'edit_tags',\n",
+              "   'reindex',\n",
+              "   'view_lyrics_synchronization',\n",
+              "   'enable_media',\n",
+              "   'disable_media',\n",
+              "   'edit_lyrics_or_annotation_brackets',\n",
+              "   'see_editorial_indicators',\n",
+              "   'view_attribution_visualization',\n",
+              "   'edit_annotation_brackets',\n",
+              "   'preview_lyrics_for_export',\n",
+              "   'hide_apple_player',\n",
+              "   'unhide_apple_player',\n",
+              "   'trigger_apple_match',\n",
+              "   'mark_lyrics_evaluation_as_staff_approved',\n",
+              "   'mark_lyrics_evaluation_as_un_staff_approved',\n",
+              "   'view_transcriber_media_player',\n",
+              "   'override_apple_match',\n",
+              "   'set_song_color_gradient',\n",
+              "   'mark_as_hot',\n",
+              "   'unmark_as_hot',\n",
+              "   'edit_youtube_url',\n",
+              "   'edit_soundcloud_url',\n",
+              "   'edit_spotify_uuid',\n",
+              "   'edit_vevo_url',\n",
+              "   'moderate_annotations',\n",
+              "   'create_annotation',\n",
+              "   'see_short_id',\n",
+              "   'manage_chart_item',\n",
+              "   'create_tag',\n",
+              "   'propose_lyrics_edit',\n",
+              "   'view_lyrics_edit_proposals_on_song',\n",
+              "   'preview_react_song_page'],\n",
+              "  'interactions': {'following': False, 'pyong': False},\n",
+              "  'iq_by_action': {},\n",
+              "  'permissions': ['see_pageviews',\n",
+              "   'view_apple_music_player',\n",
+              "   'create_comment',\n",
+              "   'view_song_story_gallery'],\n",
+              "  'relationships': {}},\n",
+              " 'custom_performances': [],\n",
+              " 'description': {'plain': 'Buy the book\\n\\nAmazon\\niBook\\nGoogle Play\\nKobo Books\\nNook\\nSainsbury’s\\n\\nIn the world of Divergent, society is divided into five factions – Candor, Abnegation, Dauntless, Amity and Erudite. Every year, all sixteen-year-olds must select the faction to which they will devote the rest of their lives. For Beatrice Prior, the decision is between staying with her family and being who she really is. Her choice shocks everyone, including herself.'},\n",
+              " 'description_annotation': {'_type': 'referent',\n",
+              "  'annotatable': {'api_path': '/songs/377690',\n",
+              "   'client_timestamps': {'lyrics_updated_at': 1599016186,\n",
+              "    'updated_by_human_at': 1579812557},\n",
+              "   'context': 'Veronica Roth',\n",
+              "   'id': 377690,\n",
+              "   'image_url': 'https://images.genius.com/df0675397365c412f071a1a0cf789d79.489x750x1.png',\n",
+              "   'link_title': 'Divergent (Chapter 1) by\\xa0Veronica\\xa0Roth',\n",
+              "   'title': 'Divergent (Chapter 1)',\n",
+              "   'type': 'Song',\n",
+              "   'url': 'https://genius.com/Veronica-roth-divergent-chapter-1-annotated'},\n",
+              "  'annotations': [{'api_path': '/annotations/3720746',\n",
+              "    'authors': [{'attribution': 1.0,\n",
+              "      'pinned_role': None,\n",
+              "      'user': {'api_path': '/users/143119',\n",
+              "       'avatar': {'medium': {'bounding_box': {'height': 400, 'width': 300},\n",
+              "         'url': 'https://images.genius.com/avatars/medium/435bf4128688f7daf8886838ca43fdb7'},\n",
+              "        'small': {'bounding_box': {'height': 100, 'width': 100},\n",
+              "         'url': 'https://images.genius.com/avatars/small/435bf4128688f7daf8886838ca43fdb7'},\n",
+              "        'thumb': {'bounding_box': {'height': 32, 'width': 32},\n",
+              "         'url': 'https://images.genius.com/avatars/thumb/435bf4128688f7daf8886838ca43fdb7'},\n",
+              "        'tiny': {'bounding_box': {'height': 16, 'width': 16},\n",
+              "         'url': 'https://images.genius.com/avatars/tiny/435bf4128688f7daf8886838ca43fdb7'}},\n",
+              "       'current_user_metadata': {'excluded_permissions': ['follow'],\n",
+              "        'interactions': {'following': False},\n",
+              "        'permissions': []},\n",
+              "       'header_image_url': 'https://images.genius.com/avatars/medium/435bf4128688f7daf8886838ca43fdb7',\n",
+              "       'human_readable_role_for_display': 'Moderator',\n",
+              "       'id': 143119,\n",
+              "       'iq': 193023,\n",
+              "       'login': 'TheScrivener',\n",
+              "       'name': 'Elizabeth Milch',\n",
+              "       'role_for_display': 'moderator',\n",
+              "       'url': 'https://genius.com/TheScrivener'}}],\n",
+              "    'body': {'plain': 'Buy the book\\n\\nAmazon\\niBook\\nGoogle Play\\nKobo Books\\nNook\\nSainsbury’s\\n\\nIn the world of Divergent, society is divided into five factions – Candor, Abnegation, Dauntless, Amity and Erudite. Every year, all sixteen-year-olds must select the faction to which they will devote the rest of their lives. For Beatrice Prior, the decision is between staying with her family and being who she really is. Her choice shocks everyone, including herself.'},\n",
+              "    'comment_count': 2,\n",
+              "    'community': True,\n",
+              "    'cosigned_by': [],\n",
+              "    'current_user_metadata': {'excluded_permissions': ['vote',\n",
+              "      'edit',\n",
+              "      'cosign',\n",
+              "      'uncosign',\n",
+              "      'destroy',\n",
+              "      'accept',\n",
+              "      'reject',\n",
+              "      'see_unreviewed',\n",
+              "      'clear_votes',\n",
+              "      'propose_edit_to',\n",
+              "      'pin_to_profile',\n",
+              "      'unpin_from_profile',\n",
+              "      'update_source',\n",
+              "      'edit_custom_preview'],\n",
+              "     'interactions': {'cosign': False, 'pyong': False, 'vote': None},\n",
+              "     'iq_by_action': {},\n",
+              "     'permissions': ['create_comment']},\n",
+              "    'custom_preview': None,\n",
+              "    'has_voters': False,\n",
+              "    'id': 3720746,\n",
+              "    'pinned': False,\n",
+              "    'rejection_comment': None,\n",
+              "    'share_url': 'https://genius.com/3720746',\n",
+              "    'source': None,\n",
+              "    'state': 'accepted',\n",
+              "    'url': 'https://genius.com/3720746/Veronica-roth-divergent-chapter-1/Divergent-chapter-1',\n",
+              "    'verified': False,\n",
+              "    'verified_by': None,\n",
+              "    'votes_total': 0}],\n",
+              "  'annotator_id': 143119,\n",
+              "  'annotator_login': 'TheScrivener',\n",
+              "  'api_path': '/referents/3720746',\n",
+              "  'classification': 'accepted',\n",
+              "  'fragment': 'Divergent (Chapter 1)',\n",
+              "  'id': 3720746,\n",
+              "  'is_description': True,\n",
+              "  'path': '/3720746/Veronica-roth-divergent-chapter-1/Divergent-chapter-1',\n",
+              "  'range': {'content': 'Divergent (Chapter 1)'},\n",
+              "  'song_id': 377690,\n",
+              "  'url': 'https://genius.com/3720746/Veronica-roth-divergent-chapter-1/Divergent-chapter-1',\n",
+              "  'verified_annotator_ids': []},\n",
+              " 'embed_content': \"<div id='rg_embed_link_377690' class='rg_embed_link' data-song-id='377690'>Read <a href='https://genius.com/Veronica-roth-divergent-chapter-1-annotated'>“Divergent (Chapter 1)” by Veronica\\xa0Roth</a> on Genius</div> <script crossorigin src='//genius.com/songs/377690/embed.js'></script>\",\n",
+              " 'featured_artists': [],\n",
+              " 'featured_video': False,\n",
+              " 'full_title': 'Divergent (Chapter 1) by\\xa0Veronica\\xa0Roth',\n",
+              " 'header_image_thumbnail_url': 'https://images.genius.com/df0675397365c412f071a1a0cf789d79.300x460x1.png',\n",
+              " 'header_image_url': 'https://images.genius.com/df0675397365c412f071a1a0cf789d79.489x750x1.png',\n",
+              " 'id': 377690,\n",
+              " 'lyrics_marked_complete_by': None,\n",
+              " 'lyrics_owner_id': 478016,\n",
+              " 'lyrics_placeholder_reason': None,\n",
+              " 'lyrics_state': 'complete',\n",
+              " 'media': [],\n",
+              " 'path': '/Veronica-roth-divergent-chapter-1-annotated',\n",
+              " 'primary_artist': {'api_path': '/artists/151698',\n",
+              "  'header_image_url': 'https://images.genius.com/853950724114f28a28e3bf96587f13dd.650x455x1.jpg',\n",
+              "  'id': 151698,\n",
+              "  'image_url': 'https://images.genius.com/ae54efdb8bfdd6746f945859e2899b0a.438x438x1.jpg',\n",
+              "  'is_meme_verified': False,\n",
+              "  'is_verified': False,\n",
+              "  'name': 'Veronica Roth',\n",
+              "  'url': 'https://genius.com/artists/Veronica-roth'},\n",
+              " 'producer_artists': [],\n",
+              " 'pyongs_count': 28,\n",
+              " 'recording_location': None,\n",
+              " 'release_date': None,\n",
+              " 'release_date_for_display': None,\n",
+              " 'song_art_image_thumbnail_url': 'https://images.genius.com/df0675397365c412f071a1a0cf789d79.300x460x1.png',\n",
+              " 'song_art_image_url': 'https://images.genius.com/df0675397365c412f071a1a0cf789d79.489x750x1.png',\n",
+              " 'song_relationships': [{'relationship_type': 'samples',\n",
+              "   'songs': [],\n",
+              "   'type': 'samples'},\n",
+              "  {'relationship_type': 'sampled_in', 'songs': [], 'type': 'sampled_in'},\n",
+              "  {'relationship_type': 'interpolates', 'songs': [], 'type': 'interpolates'},\n",
+              "  {'relationship_type': 'interpolated_by',\n",
+              "   'songs': [],\n",
+              "   'type': 'interpolated_by'},\n",
+              "  {'relationship_type': 'cover_of', 'songs': [], 'type': 'cover_of'},\n",
+              "  {'relationship_type': 'covered_by', 'songs': [], 'type': 'covered_by'},\n",
+              "  {'relationship_type': 'remix_of', 'songs': [], 'type': 'remix_of'},\n",
+              "  {'relationship_type': 'remixed_by', 'songs': [], 'type': 'remixed_by'},\n",
+              "  {'relationship_type': 'live_version_of',\n",
+              "   'songs': [],\n",
+              "   'type': 'live_version_of'},\n",
+              "  {'relationship_type': 'performed_live_as',\n",
+              "   'songs': [],\n",
+              "   'type': 'performed_live_as'}],\n",
+              " 'stats': {'accepted_annotations': 26,\n",
+              "  'contributors': 17,\n",
+              "  'hot': False,\n",
+              "  'iq_earners': 17,\n",
+              "  'pageviews': 79042,\n",
+              "  'transcribers': 1,\n",
+              "  'unreviewed_annotations': 12,\n",
+              "  'verified_annotations': 0},\n",
+              " 'title': 'Divergent (Chapter 1)',\n",
+              " 'title_with_featured': 'Divergent (Chapter 1)',\n",
+              " 'url': 'https://genius.com/Veronica-roth-divergent-chapter-1-annotated',\n",
+              " 'verified_annotations_by': [],\n",
+              " 'verified_contributors': [],\n",
+              " 'verified_lyrics_by': [],\n",
+              " 'writer_artists': []}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 63
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# this still took a while to run as each song just has so much data that comes back, so I should look into how to limit what comes back\n",
+        "# also I feel like returning the results into a list is not efficient either\n",
+        "\n",
+        "links = []\n",
+        "\n",
+        "for s in song_ids:\n",
+        "  links.append(genius.song(s)['song']['media'])"
+      ],
+      "metadata": {
+        "id": "oEHTCw2UiZWh"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "links"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "DoOlacUzTp_l",
+        "outputId": "5494624f-9c66-434c-82d3-21efade5040a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[[{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=XbGs_qK2PQA'},\n",
+              "  {'native_uri': 'spotify:track:6sDQ4uiWw9OdVrCXFLSlZt',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/6sDQ4uiWw9OdVrCXFLSlZt'},\n",
+              "  {'attribution': 'eminemofficial',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/eminemofficial/rap-god'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 14,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=hsm4poTWjMs'},\n",
+              "  {'attribution': 'iamcardib',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/iamcardib/wap-feat-megan-thee-stallion'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 128,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=DRS_PpOrUZ4'},\n",
+              "  {'native_uri': 'spotify:track:0bAkKNCQfWkexHFn7fIKns',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/0bAkKNCQfWkexHFn7fIKns'},\n",
+              "  {'attribution': 'octobersveryown',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/octobersveryown/drake-in-my-feelings'}],\n",
+              " [{'native_uri': 'spotify:track:7m9OqQk4RVRkw9JJdeAw96',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/7m9OqQk4RVRkw9JJdeAw96'},\n",
+              "  {'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=FAucVNRx_mU'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 20,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=gG_dA32oH44'},\n",
+              "  {'native_uri': 'spotify:track:2KpCpk6HjXXLb7nnXoXA5O',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/2KpCpk6HjXXLb7nnXoXA5O'},\n",
+              "  {'attribution': 'julie eisenhauer',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/julie-eisenhauer/niggas-in-paris'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=7wtfhZwyrcc'},\n",
+              "  {'native_uri': 'spotify:track:05KfyCEE6otdlT1pp2VIjP',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/05KfyCEE6otdlT1pp2VIjP'},\n",
+              "  {'attribution': 'imaginedragons',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/imaginedragons/believer'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=BiQIc7fG9pA'},\n",
+              "  {'native_uri': 'spotify:track:7vRriwrloYVaoAe3a9wJHe',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/7vRriwrloYVaoAe3a9wJHe'},\n",
+              "  {'attribution': 'gnash',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/gnash/ihateuiloveu'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 3,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=Dst9gZkq1a8'},\n",
+              "  {'native_uri': 'spotify:track:6gBFPUFcJLzWGx4lenP6h2',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/6gBFPUFcJLzWGx4lenP6h2'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=GF8aaTu2kg0'},\n",
+              "  {'native_uri': 'spotify:track:5h5tBFnbcVioFXiOixTn6E',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/5h5tBFnbcVioFXiOixTn6E'},\n",
+              "  {'attribution': 'interscope',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/interscope/kendrick-lamar-bitch-dont-kill'}],\n",
+              " [{'native_uri': 'spotify:track:1ZHYJ2Wwgxes4m8Ba88PeK',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/1ZHYJ2Wwgxes4m8Ba88PeK'},\n",
+              "  {'attribution': 'kanyewest',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/kanyewest/monster-album-version-explicit'},\n",
+              "  {'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=pS6HRKZQLFA'}],\n",
+              " [{'native_uri': 'spotify:track:60SdxE8apGAxMiRrpbmLY0',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/60SdxE8apGAxMiRrpbmLY0'},\n",
+              "  {'attribution': 'eminemofficial',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/eminemofficial/lucky-you-feat-joyner-lucas'},\n",
+              "  {'provider': 'youtube',\n",
+              "   'start': 29,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=mvSItvjFE1c'}],\n",
+              " [{'native_uri': 'spotify:track:3kxfsdsCpFgN412fpnW85Y',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/3kxfsdsCpFgN412fpnW85Y'},\n",
+              "  {'attribution': 'childish gambino',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/childish-gambino/redbone'},\n",
+              "  {'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=Kp7eSUU9oy8'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 26,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=Pzz4Z-O7710'},\n",
+              "  {'native_uri': 'spotify:track:5NQbUaeTEOGdD6hHcre0dZ',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/5NQbUaeTEOGdD6hHcre0dZ'},\n",
+              "  {'attribution': 'user 190985456',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/user-190985456/getty-was-679'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=RgKAFK5djSk'},\n",
+              "  {'native_uri': 'spotify:track:7wqSzGeodspE3V6RBD5W8L',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/7wqSzGeodspE3V6RBD5W8L'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=wKtS9pfIwUQ'},\n",
+              "  {'native_uri': 'spotify:track:2Foc5Q5nqNiosCNqttzHof',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/2Foc5Q5nqNiosCNqttzHof'},\n",
+              "  {'attribution': 'daftpunk music',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/daftpunk-music/daft-punk-get-lucky'}],\n",
+              " [{'native_uri': 'spotify:track:6XQHlsNu6so4PdglFkJQRJ',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/6XQHlsNu6so4PdglFkJQRJ'},\n",
+              "  {'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=GTWqwSNQCcg'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=ox7RsX1Ee34'},\n",
+              "  {'native_uri': 'spotify:track:6PGoSes0D9eUDeeAafB2As',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/6PGoSes0D9eUDeeAafB2As'},\n",
+              "  {'attribution': 'kendrick lamar music',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/kendrick-lamar-music/love'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=7AjD7nKiUQ4'},\n",
+              "  {'native_uri': 'spotify:track:1EbWiEra7ovNsMq3DeLSDy',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/1EbWiEra7ovNsMq3DeLSDy'},\n",
+              "  {'attribution': 'j cole',\n",
+              "   'provider': 'soundcloud',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://soundcloud.com/j-cole/power-trip'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 0,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=bHRv-EIuKJ8'}],\n",
+              " [{'provider': 'youtube',\n",
+              "   'start': 88,\n",
+              "   'type': 'video',\n",
+              "   'url': 'http://www.youtube.com/watch?v=0TIIu9CERgI'},\n",
+              "  {'native_uri': 'spotify:track:05oK0zROR8GnZGyWMcO8xU',\n",
+              "   'provider': 'spotify',\n",
+              "   'type': 'audio',\n",
+              "   'url': 'https://open.spotify.com/track/05oK0zROR8GnZGyWMcO8xU'}]]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 38
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "I was having trouble pulling out the links to the songs without timing out and their being embedded 2-3 levels down in the list/dict combo was making my head hurt\n",
+        "\n",
+        "https://stackoverflow.com/questions/8383136/parsing-json-and-searching-through-it\n",
+        "\n",
+        "But then stack overflow came through with the library ObjectPath as a very easy solution that I will definitely use more in the future"
+      ],
+      "metadata": {
+        "id": "9v-1VYDqZ7Tx"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install objectpath"
+      ],
+      "metadata": {
+        "id": "fOq0NaSbT5Ta",
+        "outputId": "44d34710-049e-490e-8583-92381853582f",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting objectpath\n",
+            "  Downloading objectpath-0.6.1-py2.py3-none-any.whl (20 kB)\n",
+            "Installing collected packages: objectpath\n",
+            "Successfully installed objectpath-0.6.1\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import objectpath"
+      ],
+      "metadata": {
+        "id": "SBkAHlC0TGXk"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "tree_obj = objectpath.Tree(links)\n",
+        "\n",
+        "df = pd.DataFrame(list(tree_obj.execute('$..url')))"
+      ],
+      "metadata": {
+        "id": "ZYgfaA59TWjE"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df = df.sort_values(0).reset_index(drop=True)\n",
+        "df"
+      ],
+      "metadata": {
+        "id": "8NqZGgsAU1IO",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000
+        },
+        "outputId": "01485933-88b5-4d35-aca1-66b43e96f992"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                                    0\n",
+              "0          http://www.youtube.com/watch?v=0TIIu9CERgI\n",
+              "1          http://www.youtube.com/watch?v=7AjD7nKiUQ4\n",
+              "2          http://www.youtube.com/watch?v=7wtfhZwyrcc\n",
+              "3          http://www.youtube.com/watch?v=BiQIc7fG9pA\n",
+              "4          http://www.youtube.com/watch?v=DRS_PpOrUZ4\n",
+              "5          http://www.youtube.com/watch?v=Dst9gZkq1a8\n",
+              "6          http://www.youtube.com/watch?v=FAucVNRx_mU\n",
+              "7          http://www.youtube.com/watch?v=GF8aaTu2kg0\n",
+              "8          http://www.youtube.com/watch?v=GTWqwSNQCcg\n",
+              "9          http://www.youtube.com/watch?v=Kp7eSUU9oy8\n",
+              "10         http://www.youtube.com/watch?v=Pzz4Z-O7710\n",
+              "11         http://www.youtube.com/watch?v=RgKAFK5djSk\n",
+              "12         http://www.youtube.com/watch?v=XbGs_qK2PQA\n",
+              "13         http://www.youtube.com/watch?v=bHRv-EIuKJ8\n",
+              "14         http://www.youtube.com/watch?v=gG_dA32oH44\n",
+              "15         http://www.youtube.com/watch?v=hsm4poTWjMs\n",
+              "16         http://www.youtube.com/watch?v=mvSItvjFE1c\n",
+              "17         http://www.youtube.com/watch?v=ox7RsX1Ee34\n",
+              "18         http://www.youtube.com/watch?v=pS6HRKZQLFA\n",
+              "19         http://www.youtube.com/watch?v=wKtS9pfIwUQ\n",
+              "20  https://open.spotify.com/track/05KfyCEE6otdlT1...\n",
+              "21  https://open.spotify.com/track/05oK0zROR8GnZGy...\n",
+              "22  https://open.spotify.com/track/0bAkKNCQfWkexHF...\n",
+              "23  https://open.spotify.com/track/1EbWiEra7ovNsMq...\n",
+              "24  https://open.spotify.com/track/1ZHYJ2Wwgxes4m8...\n",
+              "25  https://open.spotify.com/track/2Foc5Q5nqNiosCN...\n",
+              "26  https://open.spotify.com/track/2KpCpk6HjXXLb7n...\n",
+              "27  https://open.spotify.com/track/3kxfsdsCpFgN412...\n",
+              "28  https://open.spotify.com/track/5NQbUaeTEOGdD6h...\n",
+              "29  https://open.spotify.com/track/5h5tBFnbcVioFXi...\n",
+              "30  https://open.spotify.com/track/60SdxE8apGAxMiR...\n",
+              "31  https://open.spotify.com/track/6PGoSes0D9eUDee...\n",
+              "32  https://open.spotify.com/track/6XQHlsNu6so4Pdg...\n",
+              "33  https://open.spotify.com/track/6gBFPUFcJLzWGx4...\n",
+              "34  https://open.spotify.com/track/6sDQ4uiWw9OdVrC...\n",
+              "35  https://open.spotify.com/track/7m9OqQk4RVRkw9J...\n",
+              "36  https://open.spotify.com/track/7vRriwrloYVaoAe...\n",
+              "37  https://open.spotify.com/track/7wqSzGeodspE3V6...\n",
+              "38    https://soundcloud.com/childish-gambino/redbone\n",
+              "39  https://soundcloud.com/daftpunk-music/daft-pun...\n",
+              "40  https://soundcloud.com/eminemofficial/lucky-yo...\n",
+              "41      https://soundcloud.com/eminemofficial/rap-god\n",
+              "42          https://soundcloud.com/gnash/ihateuiloveu\n",
+              "43  https://soundcloud.com/iamcardib/wap-feat-mega...\n",
+              "44     https://soundcloud.com/imaginedragons/believer\n",
+              "45  https://soundcloud.com/interscope/kendrick-lam...\n",
+              "46           https://soundcloud.com/j-cole/power-trip\n",
+              "47  https://soundcloud.com/julie-eisenhauer/niggas...\n",
+              "48  https://soundcloud.com/kanyewest/monster-album...\n",
+              "49   https://soundcloud.com/kendrick-lamar-music/love\n",
+              "50  https://soundcloud.com/octobersveryown/drake-i...\n",
+              "51  https://soundcloud.com/user-190985456/getty-wa..."
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-01da82bd-71e8-404e-9f23-4ebb641d39fb\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>0</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>http://www.youtube.com/watch?v=0TIIu9CERgI</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>http://www.youtube.com/watch?v=7AjD7nKiUQ4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>http://www.youtube.com/watch?v=7wtfhZwyrcc</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>http://www.youtube.com/watch?v=BiQIc7fG9pA</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>http://www.youtube.com/watch?v=DRS_PpOrUZ4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>5</th>\n",
+              "      <td>http://www.youtube.com/watch?v=Dst9gZkq1a8</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>6</th>\n",
+              "      <td>http://www.youtube.com/watch?v=FAucVNRx_mU</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>7</th>\n",
+              "      <td>http://www.youtube.com/watch?v=GF8aaTu2kg0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>8</th>\n",
+              "      <td>http://www.youtube.com/watch?v=GTWqwSNQCcg</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>9</th>\n",
+              "      <td>http://www.youtube.com/watch?v=Kp7eSUU9oy8</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>10</th>\n",
+              "      <td>http://www.youtube.com/watch?v=Pzz4Z-O7710</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>11</th>\n",
+              "      <td>http://www.youtube.com/watch?v=RgKAFK5djSk</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>12</th>\n",
+              "      <td>http://www.youtube.com/watch?v=XbGs_qK2PQA</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>13</th>\n",
+              "      <td>http://www.youtube.com/watch?v=bHRv-EIuKJ8</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>14</th>\n",
+              "      <td>http://www.youtube.com/watch?v=gG_dA32oH44</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>15</th>\n",
+              "      <td>http://www.youtube.com/watch?v=hsm4poTWjMs</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>16</th>\n",
+              "      <td>http://www.youtube.com/watch?v=mvSItvjFE1c</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>17</th>\n",
+              "      <td>http://www.youtube.com/watch?v=ox7RsX1Ee34</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>18</th>\n",
+              "      <td>http://www.youtube.com/watch?v=pS6HRKZQLFA</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>19</th>\n",
+              "      <td>http://www.youtube.com/watch?v=wKtS9pfIwUQ</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>20</th>\n",
+              "      <td>https://open.spotify.com/track/05KfyCEE6otdlT1...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>21</th>\n",
+              "      <td>https://open.spotify.com/track/05oK0zROR8GnZGy...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>22</th>\n",
+              "      <td>https://open.spotify.com/track/0bAkKNCQfWkexHF...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>23</th>\n",
+              "      <td>https://open.spotify.com/track/1EbWiEra7ovNsMq...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>24</th>\n",
+              "      <td>https://open.spotify.com/track/1ZHYJ2Wwgxes4m8...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>25</th>\n",
+              "      <td>https://open.spotify.com/track/2Foc5Q5nqNiosCN...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>26</th>\n",
+              "      <td>https://open.spotify.com/track/2KpCpk6HjXXLb7n...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>27</th>\n",
+              "      <td>https://open.spotify.com/track/3kxfsdsCpFgN412...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>28</th>\n",
+              "      <td>https://open.spotify.com/track/5NQbUaeTEOGdD6h...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>29</th>\n",
+              "      <td>https://open.spotify.com/track/5h5tBFnbcVioFXi...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>30</th>\n",
+              "      <td>https://open.spotify.com/track/60SdxE8apGAxMiR...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>31</th>\n",
+              "      <td>https://open.spotify.com/track/6PGoSes0D9eUDee...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>32</th>\n",
+              "      <td>https://open.spotify.com/track/6XQHlsNu6so4Pdg...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>33</th>\n",
+              "      <td>https://open.spotify.com/track/6gBFPUFcJLzWGx4...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>34</th>\n",
+              "      <td>https://open.spotify.com/track/6sDQ4uiWw9OdVrC...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>35</th>\n",
+              "      <td>https://open.spotify.com/track/7m9OqQk4RVRkw9J...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>36</th>\n",
+              "      <td>https://open.spotify.com/track/7vRriwrloYVaoAe...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>37</th>\n",
+              "      <td>https://open.spotify.com/track/7wqSzGeodspE3V6...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>38</th>\n",
+              "      <td>https://soundcloud.com/childish-gambino/redbone</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>39</th>\n",
+              "      <td>https://soundcloud.com/daftpunk-music/daft-pun...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>40</th>\n",
+              "      <td>https://soundcloud.com/eminemofficial/lucky-yo...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>41</th>\n",
+              "      <td>https://soundcloud.com/eminemofficial/rap-god</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>42</th>\n",
+              "      <td>https://soundcloud.com/gnash/ihateuiloveu</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>43</th>\n",
+              "      <td>https://soundcloud.com/iamcardib/wap-feat-mega...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>44</th>\n",
+              "      <td>https://soundcloud.com/imaginedragons/believer</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>45</th>\n",
+              "      <td>https://soundcloud.com/interscope/kendrick-lam...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>46</th>\n",
+              "      <td>https://soundcloud.com/j-cole/power-trip</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>47</th>\n",
+              "      <td>https://soundcloud.com/julie-eisenhauer/niggas...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>48</th>\n",
+              "      <td>https://soundcloud.com/kanyewest/monster-album...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>49</th>\n",
+              "      <td>https://soundcloud.com/kendrick-lamar-music/love</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>50</th>\n",
+              "      <td>https://soundcloud.com/octobersveryown/drake-i...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>51</th>\n",
+              "      <td>https://soundcloud.com/user-190985456/getty-wa...</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-01da82bd-71e8-404e-9f23-4ebb641d39fb')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-01da82bd-71e8-404e-9f23-4ebb641d39fb button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-01da82bd-71e8-404e-9f23-4ebb641d39fb');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 43
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## to do next\n",
+        "\n",
+        "* clean up the dataframe\n",
+        "\n",
+        "  * parse domains separate from IDs\n",
+        "* see if my authentication can create playlists on spotify\n",
+        "* improve the keyword searching\n",
+        "\n",
+        "  * test with more obscure keywords for better results (e.g. 'erudite')"
+      ],
+      "metadata": {
+        "id": "8e32ggQoaRH9"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Musixmatch Section"
+      ],
+      "metadata": {
+        "id": "5Zy1WXQI3m4c"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install pymusixmatch"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "VEPogZNy3lWN",
+        "outputId": "eaa96f2c-837b-4bb1-c786-1c0346025cd9"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting pymusixmatch\n",
+            "  Downloading pymusixmatch-0.3.tar.gz (7.2 kB)\n",
+            "Requirement already satisfied: requests in /usr/local/lib/python3.7/dist-packages (from pymusixmatch) (2.23.0)\n",
+            "Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /usr/local/lib/python3.7/dist-packages (from requests->pymusixmatch) (1.24.3)\n",
+            "Requirement already satisfied: chardet<4,>=3.0.2 in /usr/local/lib/python3.7/dist-packages (from requests->pymusixmatch) (3.0.4)\n",
+            "Requirement already satisfied: idna<3,>=2.5 in /usr/local/lib/python3.7/dist-packages (from requests->pymusixmatch) (2.10)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.7/dist-packages (from requests->pymusixmatch) (2021.10.8)\n",
+            "Building wheels for collected packages: pymusixmatch\n",
+            "  Building wheel for pymusixmatch (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for pymusixmatch: filename=pymusixmatch-0.3-py3-none-any.whl size=5874 sha256=a313fdf13b3d38ff5ad16d7bbc5e32e7ab5b1d764587698110bbb2affd24fc99\n",
+            "  Stored in directory: /root/.cache/pip/wheels/83/78/cf/3cb1d111b5e5bd329dfeee00f51a5b6b3308eecd666df1688f\n",
+            "Successfully built pymusixmatch\n",
+            "Installing collected packages: pymusixmatch\n",
+            "Successfully installed pymusixmatch-0.3\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from musixmatch import Musixmatch"
+      ],
+      "metadata": {
+        "id": "FJxA66fp3tP9"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "mm_auth = '609ff78f4f39b1007faa99f51e07a34e'"
+      ],
+      "metadata": {
+        "id": "Ewmm8DWsI3JU"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "mm_root = 'http://api.musixmatch.com/ws/1.1/'"
+      ],
+      "metadata": {
+        "id": "wW2loob3Lerq"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "apikey = '&apikey='+mm_auth"
+      ],
+      "metadata": {
+        "id": "9PK4glCHLqaM"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "apikey"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "3tbfnbgJLuCt",
+        "outputId": "ebf0d4ee-40b3-4f70-e956-f1674f9d9b7e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'&apikey=609ff78f4f39b1007faa99f51e07a34e'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 41
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "mm = Musixmatch(mm_auth)"
+      ],
+      "metadata": {
+        "id": "5gE9_PQj3tCl"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "test2 = 'artist.search?q_artist=prodigy&page_size=5'"
+      ],
+      "metadata": {
+        "id": "EX8KWGl5LW-B"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "test_full = mm_root+test2+apikey\n",
+        "test_full"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "q4nJ5WuhMbvm",
+        "outputId": "dc6339f5-d8c4-4c7e-f6ce-b12216fe7eed"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'http://api.musixmatch.com/ws/1.1/artist.search?q_artist=prodigy&page_size=5&apikey=609ff78f4f39b1007faa99f51e07a34e'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 43
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "r_test = requests.get(test_full)"
+      ],
+      "metadata": {
+        "id": "3PPn1Zg9HUlJ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "r_test.text"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 122
+        },
+        "id": "lnA85A_aHyuO",
+        "outputId": "6a0324ac-b4a5-4567-82a3-7441d379bd91"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'{\"message\":{\"header\":{\"status_code\":200,\"execute_time\":0.099129915237427,\"available\":3106},\"body\":{\"artist_list\":[{\"artist\":{\"artist_id\":13816,\"artist_name\":\"Prodigy\",\"artist_name_translation_list\":[{\"artist_name_translation\":{\"language\":\"ZH\",\"translation\":\"\\\\u8d85\\\\u51e1\\\\u6a02\\\\u5718\"}}],\"artist_comment\":\"\",\"artist_country\":\"US\",\"artist_alias_list\":[{\"artist_alias\":\"\\\\u30d7\\\\u30ed\\\\u30c7\\\\u30a3\\\\u30b8\\\\u30fc\"},{\"artist_alias\":\"\\\\u8d85\\\\u51e1\\\\u6a02\\\\u5718\"},{\"artist_alias\":\"Prodigy (of Mobb Deep)\"},{\"artist_alias\":\"Prodigy of Mobb Deep\"},{\"artist_alias\":\"Prodigy of Mobb Depp\"}],\"artist_rating\":31,\"artist_twitter_url\":\"https:\\\\/\\\\/twitter.com\\\\/PRODIGYMOBBDEEP\",\"artist_credits\":{\"artist_list\":[]},\"restricted\":0,\"updated_time\":\"2017-06-22T07:07:45Z\",\"begin_date_year\":\"1974\",\"begin_date\":\"1974-11-02\",\"end_date_year\":\"2017\",\"end_date\":\"2017-06-20\"}},{\"artist\":{\"artist_id\":16439,\"artist_name\":\"The Prodigy\",\"artist_name_translation_list\":[],\"artist_comment\":\"\",\"artist_country\":\"GB\",\"artist_alias_list\":[{\"artist_alias\":\"Prodigy\"},{\"artist_alias\":\"The Prodigy Vs. The Prodigy\"},{\"artist_alias\":\"The Prodigy\"}],\"artist_rating\":59,\"artist_twitter_url\":\"https:\\\\/\\\\/twitter.com\\\\/THE_PRODIGY\",\"artist_credits\":{\"artist_list\":[]},\"restricted\":0,\"updated_time\":\"2013-11-05T11:25:25Z\",\"begin_date_year\":\"1990\",\"begin_date\":\"1990-00-00\",\"end_date_year\":\"\",\"end_date\":\"0000-00-00\"}},{\"artist\":{\"artist_id\":26833238,\"artist_name\":\"Prodigy & The Alchemist\",\"artist_name_translation_list\":[],\"artist_comment\":\"\",\"artist_country\":\"\",\"artist_alias_list\":[],\"artist_rating\":10,\"artist_twitter_url\":\"\",\"artist_credits\":{\"artist_list\":[{\"artist\":{\"artist_id\":13816,\"artist_name\":\"Prodigy\",\"artist_name_translation_list\":[{\"artist_name_translation\":{\"language\":\"ZH\",\"translation\":\"\\\\u8d85\\\\u51e1\\\\u6a02\\\\u5718\"}}],\"artist_comment\":\"\",\"artist_country\":\"US\",\"artist_alias_list\":[{\"artist_alias\":\"\\\\u30d7\\\\u30ed\\\\u30c7\\\\u30a3\\\\u30b8\\\\u30fc\"},{\"artist_alias\":\"\\\\u8d85\\\\u51e1\\\\u6a02\\\\u5718\"},{\"artist_alias\":\"Prodigy (of Mobb Deep)\"},{\"artist_alias\":\"Prodigy of Mobb Deep\"},{\"artist_alias\":\"Prodigy of Mobb Depp\"}],\"artist_rating\":31,\"artist_twitter_url\":\"https:\\\\/\\\\/twitter.com\\\\/PRODIGYMOBBDEEP\",\"artist_credits\":{\"artist_list\":[]},\"restricted\":0,\"updated_time\":\"2017-06-22T07:07:45Z\",\"begin_date_year\":\"1974\",\"begin_date\":\"1974-11-02\",\"end_date_year\":\"2017\",\"end_date\":\"2017-06-20\"}},{\"artist\":{\"artist_id\":107784,\"artist_name\":\"The Alchemist\",\"artist_name_translation_list\":[],\"artist_comment\":\"\",\"artist_country\":\"US\",\"artist_alias_list\":[{\"artist_alias\":\"\\\\u30b6 \\\\u30a2\\\\u30eb\\\\u30b1\\\\u30df\\\\u30b9\\\\u30c8\"},{\"artist_alias\":\"Alchemist\"}],\"artist_rating\":41,\"artist_twitter_url\":\"https:\\\\/\\\\/twitter.com\\\\/Alchemist\",\"artist_credits\":{\"artist_list\":[]},\"restricted\":0,\"updated_time\":\"2021-10-11T12:21:06Z\",\"begin_date_year\":\"1977\",\"begin_date\":\"1977-10-25\",\"end_date_year\":\"\",\"end_date\":\"0000-00-00\"}}]},\"restricted\":0,\"updated_time\":\"2014-03-01T10:01:36Z\",\"begin_date_year\":\"\",\"begin_date\":\"0000-00-00\",\"end_date_year\":\"\",\"end_date\":\"0000-00-00\"}},{\"artist\":{\"artist_id\":28758934,\"artist_name\":\"Redlight feat. Prodigy\",\"artist_name_translation_list\":[],\"artist_comment\":\"\",\"artist_country\":\"\",\"artist_alias_list\":[],\"artist_rating\":6,\"artist_twitter_url\":\"\",\"artist_credits\":{\"artist_list\":[{\"artist\":{\"artist_id\":359321,\"artist_name\":\"Redlight\",\"artist_name_translation_list\":[{\"artist_name_translation\":{\"language\":\"JA\",\"translation\":\"\\\\u30ec\\\\u30c3\\\\u30c9\\\\u30e9\\\\u30a4\\\\u30c8\"}}],\"artist_comment\":\"\",\"artist_country\":\"FR\",\"artist_alias_list\":[{\"artist_alias\":\"\\\\u30ec\\\\u30c3\\\\u30c9\\\\u30e9\\\\u30a4\\\\u30c8\"}],\"artist_rating\":27,\"artist_twitter_url\":\"\",\"artist_credits\":{\"artist_list\":[]},\"restricted\":0,\"updated_time\":\"2018-01-28T07:02:56Z\",\"begin_date_year\":\"2007\",\"begin_date\":\"2007-01-00\",\"end_date_year\":\"\",\"end_date\":\"0000-00-00\"}},{\"artist\":{\"artist_id\":28856147,\"artist_name\":\"Prodigy\",\"artist_name_translation_list\":[{\"artist_name_translation\":{\"language\":\"ZH\",\"translation\":\"\\\\u8d85\\\\u51e1\\\\u6a02\\\\u5718\"}}],\"artist_comment\":\"\",\"artist_country\":\"\",\"artist_alias_list\":[{\"artist_alias\":\"\\\\u30d7\\\\u30ed\\\\u30c7\\\\u30a3\\\\u30b8\\\\u30fc\"},{\"artist_alias\":\"\\\\u8d85\\\\u51e1\\\\u6a02\\\\u5718\"}],\"artist_rating\":17,\"artist_twitter_url\":\"\",\"artist_credits\":{\"artist_list\":[]},\"restricted\":0,\"updated_time\":\"2015-11-30T13:42:19Z\",\"begin_date_year\":\"\",\"begin_date\":\"0000-00-00\",\"end_date_year\":\"\",\"end_date\":\"0000-00-00\"}}]},\"restricted\":0,\"updated_time\":\"2015-11-26T19:44:58Z\",\"begin_date_year\":\"\",\"begin_date\":\"0000-00-00\",\"end_date_year\":\"\",\"end_date\":\"0000-00-00\"}},{\"artist\":{\"artist_id\":525040,\"artist_name\":\"Subhuman Prodigy of Wickedness\",\"artist_name_translation_list\":[],\"artist_comment\":\"\",\"artist_country\":\"\",\"artist_alias_list\":[],\"artist_rating\":1,\"artist_twitter_url\":\"\",\"artist_credits\":{\"artist_list\":[]},\"restricted\":0,\"updated_time\":\"2013-06-26T10:23:39Z\",\"begin_date_year\":\"2009\",\"begin_date\":\"2009-00-00\",\"end_date_year\":\"\",\"end_date\":\"0000-00-00\"}}]}}}'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 45
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "keyword = 'hype'\n",
+        "\n",
+        "info = '&page_size=25&page=1&s_track_rating=desc'"
+      ],
+      "metadata": {
+        "id": "y50VZHRYHhu2"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "track_search = 'track.search?q_lyrics='"
+      ],
+      "metadata": {
+        "id": "nah6o6zXNb0h"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "track_search_full = mm_root+track_search+keyword+info+apikey\n",
+        "track_search_full"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "xSGzIDaXO8B6",
+        "outputId": "cbeb79bd-23a5-4c34-a642-6ecf1739eafe"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'http://api.musixmatch.com/ws/1.1/track.search?q_lyrics=hype&page_size=25&page=1&s_track_rating=desc&apikey=609ff78f4f39b1007faa99f51e07a34e'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 48
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "r_tracks = requests.get(track_search_full)"
+      ],
+      "metadata": {
+        "id": "HhTmgBgXO2Sx"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "result = r_tracks.json()"
+      ],
+      "metadata": {
+        "id": "LoYx0V2DPJtb"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for i in result['message']['body']['track_list']:\n",
+        "  print(i['track']['track_name'],' by ',i['track']['artist_name'])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3JnsX3XwSiP8",
+        "outputId": "a2310dbc-3a81-4fe6-a53b-27923c2f4984"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "TKN (feat. Travis Scott)  by  ROSALÍA feat. Travis Scott\n",
+            "International Affair (feat. Sean Paul & Tweet)  by  Mark Ronson feat. Sean Paul & Tweet\n",
+            "I Think  by  Tech N9ne feat. JL, Stevie Stone, Joey Cool, King Iso, Krizz Kaliko, Jehry Robinson, Wrekonize, Bernz, Maez301, Ubi & Godemis\n",
+            "Halftime (Live)  by  Nas\n",
+            "Megalomaniac - Single Mix  by  KMFDM\n",
+            "Go Down Deh (feat. Shaggy and Sean Paul)  by  Spice\n",
+            "Promise Land  by  ZeXzy\n",
+            "Hope in the dark  by  Luxiem\n",
+            "People Everyday  by  Arrested Development\n",
+            "Sold Out  by  PANTHEPACK\n",
+            "See  by  Maayaa\n",
+            "Blood Runs Cold  by  Jedi Mind Tricks feat. Sean Price\n",
+            "The Blinding (feat. Travis Scott)  by  Jay Electronica feat. Travis Scott\n",
+            "Short N Sweet (feat. Nyashinski)  by  Sauti Sol feat. Nyashinski\n",
+            "Pain Killer  by  Sarkodie feat. RunTown\n",
+            "Hang out!  by  ヒプノシスマイク -A.R.B- (Division All Stars)\n",
+            "Don't Believe the Hype  by  LZ\n",
+            "10,000 Tears (feat. Ed Sheeran)  by  Ghetts feat. Ed Sheeran\n",
+            "Homeless  by  Ed Sheeran\n",
+            "One Day at a Time (feat. Eminem & Outlawz) [Em's Version]  by  2pacfeat.Eminem & Outlawz\n",
+            "Homeless - LIVE  by  Ed Sheeran\n",
+            "Homeless - Live at the Bedford  by  Ed Sheeran\n",
+            "Young Guns  by  Lewi White feat. Devlin, Ed Sheeran, Griminal & Yasmin\n",
+            "We All Die One Day  by  Eminem feat. 50 Cent & Lloyd Banks\n",
+            "Young Guns  by  Lewi White feat. Ed Sheeran, Yasmin, Griminal & Devlin\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "result['message']['body']['track_list'][0]['track']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "I8zTN7qPPyrJ",
+        "outputId": "54b8dc89-9260-4091-c89a-8bc3d6aee590"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'album_id': 38495582,\n",
+              " 'album_name': 'TKN (feat. Travis Scott)',\n",
+              " 'artist_id': 45577033,\n",
+              " 'artist_name': 'ROSALÍA feat. Travis Scott',\n",
+              " 'commontrack_id': 111849450,\n",
+              " 'explicit': 1,\n",
+              " 'has_lyrics': 1,\n",
+              " 'has_richsync': 1,\n",
+              " 'has_subtitles': 1,\n",
+              " 'instrumental': 0,\n",
+              " 'num_favourite': 560,\n",
+              " 'primary_genres': {'music_genre_list': [{'music_genre': {'music_genre_id': 34,\n",
+              "     'music_genre_name': 'Music',\n",
+              "     'music_genre_name_extended': 'Music',\n",
+              "     'music_genre_parent_id': 0,\n",
+              "     'music_genre_vanity': 'Music'}},\n",
+              "   {'music_genre': {'music_genre_id': 12,\n",
+              "     'music_genre_name': 'Latin',\n",
+              "     'music_genre_name_extended': 'Latin',\n",
+              "     'music_genre_parent_id': 34,\n",
+              "     'music_genre_vanity': 'Latin'}}]},\n",
+              " 'restricted': 0,\n",
+              " 'track_edit_url': 'https://www.musixmatch.com/lyrics/ROSAL%C3%8DA-4/TKN/edit?utm_source=application&utm_campaign=api&utm_medium=Hyper+Island+AIBC23%3A1409622443292',\n",
+              " 'track_id': 198070851,\n",
+              " 'track_name': 'TKN (feat. Travis Scott)',\n",
+              " 'track_name_translation_list': [],\n",
+              " 'track_rating': 79,\n",
+              " 'track_share_url': 'https://www.musixmatch.com/lyrics/ROSAL%C3%8DA-4/TKN?utm_source=application&utm_campaign=api&utm_medium=Hyper+Island+AIBC23%3A1409622443292',\n",
+              " 'updated_time': '2022-01-19T16:22:48Z'}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 64
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Spotify Section"
+      ],
+      "metadata": {
+        "id": "NY4Hn2xXA9p3"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install spotipy"
+      ],
+      "metadata": {
+        "id": "1AhGn_DSAzs2",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "51a009d5-969d-4733-e85c-c82e81287d7a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting spotipy\n",
+            "  Downloading spotipy-2.19.0-py3-none-any.whl (27 kB)\n",
+            "Collecting urllib3>=1.26.0\n",
+            "  Downloading urllib3-1.26.9-py2.py3-none-any.whl (138 kB)\n",
+            "\u001b[K     |████████████████████████████████| 138 kB 9.8 MB/s \n",
+            "\u001b[?25hRequirement already satisfied: six>=1.15.0 in /usr/local/lib/python3.7/dist-packages (from spotipy) (1.15.0)\n",
+            "Collecting requests>=2.25.0\n",
+            "  Downloading requests-2.27.1-py2.py3-none-any.whl (63 kB)\n",
+            "\u001b[K     |████████████████████████████████| 63 kB 2.2 MB/s \n",
+            "\u001b[?25hRequirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.7/dist-packages (from requests>=2.25.0->spotipy) (2.10)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.7/dist-packages (from requests>=2.25.0->spotipy) (2021.10.8)\n",
+            "Requirement already satisfied: charset-normalizer~=2.0.0 in /usr/local/lib/python3.7/dist-packages (from requests>=2.25.0->spotipy) (2.0.12)\n",
+            "Installing collected packages: urllib3, requests, spotipy\n",
+            "  Attempting uninstall: urllib3\n",
+            "    Found existing installation: urllib3 1.24.3\n",
+            "    Uninstalling urllib3-1.24.3:\n",
+            "      Successfully uninstalled urllib3-1.24.3\n",
+            "  Attempting uninstall: requests\n",
+            "    Found existing installation: requests 2.23.0\n",
+            "    Uninstalling requests-2.23.0:\n",
+            "      Successfully uninstalled requests-2.23.0\n",
+            "\u001b[31mERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n",
+            "google-colab 1.0.0 requires requests~=2.23.0, but you have requests 2.27.1 which is incompatible.\n",
+            "datascience 0.10.6 requires folium==0.2.1, but you have folium 0.8.3 which is incompatible.\u001b[0m\n",
+            "Successfully installed requests-2.27.1 spotipy-2.19.0 urllib3-1.26.9\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# now we can import the library into our notebook as well as a certain function thereof\n",
+        "\n",
+        "import spotipy\n",
+        "import spotipy.util as util\n",
+        "from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth\n",
+        "\n",
+        "# My client ID & client secret\n",
+        "\n",
+        "cid = '98c473969fa3420b870de2b597fcd03c'\n",
+        "secret = 'dd2b079eab85492ca176fa1ced040769'\n",
+        "\n",
+        "ccm = SpotifyClientCredentials(client_id=cid, client_secret=secret)\n",
+        "sp = spotipy.Spotify(client_credentials_manager=ccm)"
+      ],
+      "metadata": {
+        "id": "gpk_GhCpA2GJ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "username = 'timetogetnasty'\n",
+        "scope = 'playlist-modify-private'\n",
+        "redirect = 'http://localhost/'\n",
+        "\n",
+        "token = util.prompt_for_user_token(username, scope, client_id=cid, client_secret=secret, redirect_uri=redirect)\n",
+        "\n",
+        "spo = spotipy.Spotify(auth=token)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 678
+        },
+        "id": "x0AMJC1t20gb",
+        "outputId": "cba4b5b8-28b1-45c4-f554-da44cb2e4b00"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "metadata": {
+            "tags": null
+          },
+          "name": "stderr",
+          "output_type": "stream",
+          "text": [
+            "Using `localhost` as redirect URI without a port. Specify a port (e.g. `localhost:8080`) to allow automatic retrieval of authentication code instead of having to copy and paste the URL your browser is redirected to.\n",
+            "Using `localhost` as redirect URI without a port. Specify a port (e.g. `localhost:8080`) to allow automatic retrieval of authentication code instead of having to copy and paste the URL your browser is redirected to.\n"
+          ]
+        },
+        {
+          "output_type": "error",
+          "ename": "KeyboardInterrupt",
+          "evalue": "ignored",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/spotipy/oauth2.py\u001b[0m in \u001b[0;36m_get_user_input\u001b[0;34m(prompt)\u001b[0m\n\u001b[1;32m    114\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 115\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mraw_input\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mprompt\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    116\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mNameError\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mNameError\u001b[0m: name 'raw_input' is not defined",
+            "\nDuring handling of the above exception, another exception occurred:\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/ipykernel/kernelbase.py\u001b[0m in \u001b[0;36m_input_request\u001b[0;34m(self, prompt, ident, parent, password)\u001b[0m\n\u001b[1;32m    728\u001b[0m             \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 729\u001b[0;31m                 \u001b[0mident\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mreply\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msession\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mrecv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mstdin_socket\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    730\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mException\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/jupyter_client/session.py\u001b[0m in \u001b[0;36mrecv\u001b[0;34m(self, socket, mode, content, copy)\u001b[0m\n\u001b[1;32m    802\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 803\u001b[0;31m             \u001b[0mmsg_list\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0msocket\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mrecv_multipart\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmode\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcopy\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mcopy\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    804\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mzmq\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mZMQError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/zmq/sugar/socket.py\u001b[0m in \u001b[0;36mrecv_multipart\u001b[0;34m(self, flags, copy, track)\u001b[0m\n\u001b[1;32m    624\u001b[0m         \"\"\"\n\u001b[0;32m--> 625\u001b[0;31m         \u001b[0mparts\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mrecv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mflags\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcopy\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mcopy\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtrack\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtrack\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    626\u001b[0m         \u001b[0;31m# have first part already, only loop while more to receive\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32mzmq/backend/cython/socket.pyx\u001b[0m in \u001b[0;36mzmq.backend.cython.socket.Socket.recv\u001b[0;34m()\u001b[0m\n",
+            "\u001b[0;32mzmq/backend/cython/socket.pyx\u001b[0m in \u001b[0;36mzmq.backend.cython.socket.Socket.recv\u001b[0;34m()\u001b[0m\n",
+            "\u001b[0;32mzmq/backend/cython/socket.pyx\u001b[0m in \u001b[0;36mzmq.backend.cython.socket._recv_copy\u001b[0;34m()\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/zmq/backend/cython/checkrc.pxd\u001b[0m in \u001b[0;36mzmq.backend.cython.checkrc._check_rc\u001b[0;34m()\u001b[0m\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m: ",
+            "\nDuring handling of the above exception, another exception occurred:\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-4-f5ee6faea19a>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0mredirect\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m'http://localhost/'\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 5\u001b[0;31m \u001b[0mtoken\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mutil\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprompt_for_user_token\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0musername\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mscope\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mclient_id\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mcid\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mclient_secret\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0msecret\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mredirect_uri\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mredirect\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      6\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      7\u001b[0m \u001b[0mspo\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mspotipy\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mSpotify\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mauth\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtoken\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/spotipy/util.py\u001b[0m in \u001b[0;36mprompt_for_user_token\u001b[0;34m(username, scope, client_id, client_secret, redirect_uri, cache_path, oauth_manager, show_dialog)\u001b[0m\n\u001b[1;32m     98\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0mtoken_info\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     99\u001b[0m         \u001b[0mcode\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0msp_oauth\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_auth_response\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 100\u001b[0;31m         \u001b[0mtoken\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0msp_oauth\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_access_token\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcode\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mas_dict\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mFalse\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    101\u001b[0m     \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    102\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mtoken_info\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"access_token\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/spotipy/oauth2.py\u001b[0m in \u001b[0;36mget_access_token\u001b[0;34m(self, code, as_dict, check_cache)\u001b[0m\n\u001b[1;32m    533\u001b[0m         payload = {\n\u001b[1;32m    534\u001b[0m             \u001b[0;34m\"redirect_uri\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mredirect_uri\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 535\u001b[0;31m             \u001b[0;34m\"code\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0mcode\u001b[0m \u001b[0;32mor\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_auth_response\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    536\u001b[0m             \u001b[0;34m\"grant_type\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0;34m\"authorization_code\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    537\u001b[0m         }\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/spotipy/oauth2.py\u001b[0m in \u001b[0;36mget_auth_response\u001b[0;34m(self, open_browser)\u001b[0m\n\u001b[1;32m    497\u001b[0m                                redirect_host, redirect_host)\n\u001b[1;32m    498\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 499\u001b[0;31m         \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_get_auth_response_interactive\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mopen_browser\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mopen_browser\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    500\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    501\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mget_authorization_code\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mNone\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/spotipy/oauth2.py\u001b[0m in \u001b[0;36m_get_auth_response_interactive\u001b[0;34m(self, open_browser)\u001b[0m\n\u001b[1;32m    448\u001b[0m                 \u001b[0;34m\"Enter the URL you were redirected to: \"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mformat\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0murl\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    449\u001b[0m             )\n\u001b[0;32m--> 450\u001b[0;31m         \u001b[0mresponse\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_get_user_input\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mprompt\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    451\u001b[0m         \u001b[0mstate\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcode\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mSpotifyOAuth\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mparse_auth_response_url\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mresponse\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    452\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mstate\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32mNone\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mstate\u001b[0m \u001b[0;34m!=\u001b[0m \u001b[0mstate\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/spotipy/oauth2.py\u001b[0m in \u001b[0;36m_get_user_input\u001b[0;34m(prompt)\u001b[0m\n\u001b[1;32m    115\u001b[0m             \u001b[0;32mreturn\u001b[0m \u001b[0mraw_input\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mprompt\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    116\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mNameError\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 117\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0minput\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mprompt\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    118\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    119\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0mstaticmethod\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/ipykernel/kernelbase.py\u001b[0m in \u001b[0;36mraw_input\u001b[0;34m(self, prompt)\u001b[0m\n\u001b[1;32m    702\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_parent_ident\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    703\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_parent_header\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 704\u001b[0;31m             \u001b[0mpassword\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mFalse\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    705\u001b[0m         )\n\u001b[1;32m    706\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/ipykernel/kernelbase.py\u001b[0m in \u001b[0;36m_input_request\u001b[0;34m(self, prompt, ident, parent, password)\u001b[0m\n\u001b[1;32m    732\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    733\u001b[0m                 \u001b[0;31m# re-raise KeyboardInterrupt, to truncate traceback\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 734\u001b[0;31m                 \u001b[0;32mraise\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    735\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    736\u001b[0m                 \u001b[0;32mbreak\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m: "
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "list_name = keyword + ' playlist'\n",
+        "descrip = 'This playlist includes songs whose lyrics include the word \"'+ keyword + '\"'\n",
+        "\n",
+        "results = spo.user_playlist_create(user=username, name=list_name, public=False, description=descrip)"
+      ],
+      "metadata": {
+        "id": "8RSkpkGeJB5O"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "sp_res = sp.search(q='TKN (feat. Travis Scott)',type='track')"
+      ],
+      "metadata": {
+        "id": "KGKEE3x5HboV"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "sp_res['tracks']['items'][0]['uri']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "R1QPXaG_H0K1",
+        "outputId": "af47119d-162a-4b8c-bdac-e0475ba8eed8"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'spotify:track:4w47S36wQGBhGg073q3nt7'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 20
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "sp_res['tracks']['items'][0]['external_urls']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JWqeTTB_IRVy",
+        "outputId": "2f92dfd0-7c6c-4275-f824-9f624e20e575"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'spotify': 'https://open.spotify.com/track/4w47S36wQGBhGg073q3nt7'}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 25
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        ""
+      ],
+      "metadata": {
+        "id": "mmxjUD_BLhQK"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
